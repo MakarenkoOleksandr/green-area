@@ -1,142 +1,193 @@
-const TelegramBot = require("node-telegram-bot-api");
-const bot = new TelegramBot("6987337400:AAHp2b4E7CngidB0nBFOqix6xW2rmQMp59E", {
-  polling: true,
-});
+const { Telegraf, Markup } = require("telegraf");
+require("dotenv").config();
+
+const token = process.env.BOT_TOKEN;
+const bot = new Telegraf(token);
 
 // Start-menu
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-
-  const keyboard = {
-    reply_markup: {
-      keyboard: [["📁 Каталог товаров"], ["🛒 Корзина"]],
-      resize_keyboard: true,
-    },
-  };
-
-  bot.sendMessage(
-    chatId,
+bot.command("start", (ctx) => {
+  const keyboard = mainMenu();
+  ctx.reply(
     `Привет! Добро пожаловать в наш магазин. Как я могу помочь?`,
     keyboard
   );
 });
 
-//Variables
+// Variables
 let cart = {};
-const products = {
-  Трава: [
-    {
-      name: "Порошок из лобковых волос",
-      description: "Ебошит",
-      price: "$9.99",
-    },
-    {
-      name: "Жвачка с лобковыми волосами",
-      description: "Жуй и ебоши",
-      price: "$12.99",
-    },
-    {
-      name: "Сушеные лобковые волосы",
-      description: "Как чипсы, только волосатые",
-      price: "$7.99",
-    },
-  ],
-  Печеньки: [
-    {
-      name: "Прошлогодние",
-      description: "Ебошит нормально",
-      price: "$15.99",
-    },
-    {
-      name: "Печеньки с изюмом",
-      description: "Для гурманов",
-      price: "$18.99",
-    },
-    {
-      name: "Печеньки с шоколадом",
-      description: "Шоколадные волосы внутри",
-      price: "$22.99",
-    },
-  ],
-  Кексы: [
-    {
-      name: "С запашком",
-      description: "Ебошит, но потом хочется травы",
-      price: "$25.99",
-    },
-    {
-      name: "Кекс с малиной",
-      description: "Малиновые волосы для аромата",
-      price: "$28.99",
-    },
-    {
-      name: "Кекс с ванилью",
-      description: "Ванильные волосы в каждом кексе",
-      price: "$30.99",
-    },
-  ],
-  Косяки: [
-    {
-      name: "Хуй пойми что было час назад",
-      description: "Все в одном",
-      price: "$35.99",
-    },
-    {
-      name: "Секретные косяки",
-      description: "Тайное сочетание волос и травы",
-      price: "$39.99",
-    },
-    {
-      name: "Эксклюзивные косяки",
-      description: "Лучшие из лучших",
-      price: "$49.99",
-    },
-  ],
-};
+let orderFormData = {};
+const products = require("./modules/catalog");
 
-// Catalog
-// General
-bot.onText(/📁 Каталог товаров/, (msg) => {
-  const chatId = msg.chat.id;
-  getCatalogs(chatId);
-});
-
-// Create categories menu
-function getCatalogs(chat) {
-  const inlineKeyboard = {
-    reply_markup: {
-      inline_keyboard: Object.keys(products).map((category) => [
-        { text: category, callback_data: category },
-      ]),
-    },
-  };
-
-  bot.sendMessage(chat, "Выберите категорию:", inlineKeyboard);
+function mainMenu() {
+  return Markup.keyboard([["📁 Каталог товаров"], ["🛒 Корзина"]]).resize();
 }
 
-bot.on("callback_query", (query) => {
-  const chatId = query.message.chat.id;
-  const category = query.data;
-
-  openCategory(chatId, category);
-  bot.answerCallbackQuery(query.id, `Переходим в ${category}`);
+// Main menu
+bot.hears("📁 Каталог товаров", (ctx) => {
+  const inlineKeyboard = Markup.inlineKeyboard(
+    Object.keys(products).map((category) =>
+      Markup.button.callback(`${category} 🔽`, `openGoods_${category}`)
+    )
+  );
+  ctx.reply("Выберите категорию:", inlineKeyboard);
 });
 
-// Opening categories goods extends category name
-function openCategory(chatId, category) {
-  const categoryProducts = products[category];
+bot.hears("🛒 Корзина", (ctx) => {
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Оформить заказ", "sendForm"),
+    Markup.button.callback("Очистить корзину", "clearCart"),
+  ]);
+  const cartContent = getCartContent(ctx, "add");
+  ctx.replyWithHTML(
+    `<b>🛒 Ваша корзина:</b>\n\n${cartContent}`,
+    inlineKeyboard
+  );
+});
 
-  if (categoryProducts.length > 0) {
-    const inlineKeyboard = {
+// Catalog__categories goods extends category name
+
+function openGoods(ctx, name) {
+  const categoryProducts = products[name];
+  categoryProducts.forEach((product) => {
+    const inlineKeyboard = Markup.inlineKeyboard([
+      Markup.button.callback(
+        "1️⃣",
+        `addToCart_${product.name}_1_${product.price}`
+      ),
+      Markup.button.callback(
+        "2️⃣",
+        `addToCart_${product.name}_2_${product.price}`
+      ),
+      Markup.button.callback(
+        "3️⃣",
+        `addToCart_${product.name}_3_${product.price}`
+      ),
+      Markup.button.callback(
+        "5️⃣",
+        `addToCart_${product.name}_5_${product.price}`
+      ),
+      Markup.button.callback(
+        "🔟",
+        `addToCart_${product.name}_10_${product.price}`
+      ),
+    ]);
+    if (name === "Трава") {
+      const content = `<b>🛍 ${product.name}</b>\n${product.happy}\n${product.power}\n\n💵 ${product.price}\n\nДобавить в корзину гр:`;
+      ctx.replyWithHTML(content, inlineKeyboard);
+    } else {
+      const content = `<b>🛍 ${product.name}</b>\n${product.happy}\n${product.power}\n\n💵 ${product.price}\n\nДобавить в корзину шт:`;
+      ctx.replyWithHTML(content, inlineKeyboard);
+    }
+  });
+}
+
+function sendForm(ctx) {
+  const content = getCartContent(ctx, "check");
+  if (Object.keys(content).length > 0) {
+    ctx.reply("Send me your number please", {
       reply_markup: {
-        inline_keyboard: categoryProducts.map((product) => [
-          { text: product.name, callback_data: `add_to_cart_${product.id}` },
-        ]),
+        keyboard: [[{ text: "📲 Send phone number", request_contact: true }]],
       },
-    };
-
-    bot.sendMessage(chatId, category, inlineKeyboard);
+    });
   } else {
-    bot.sendMessage(chatId, "Товары в этой категории отсутствуют.");
+    ctx.reply("Вы не можете оформить заказ с пустой корзиной!");
   }
 }
+
+// Cart
+function addToCart(productName, count, price) {
+  const setPrice = parseFloat(price.replace(/\$/g, ""));
+  if (!cart[productName]) {
+    cart[productName] = {
+      count: 0,
+      total: 0,
+    };
+  }
+
+  cart[productName].count += parseInt(count, 10);
+  cart[productName].total += parseInt(count, 10) * parseFloat(setPrice);
+}
+
+function getCartContent(ctx, data) {
+  let content = "";
+
+  if (data === "add") {
+    let totalOrderAmount = 0;
+
+    for (const productName in cart) {
+      const count = cart[productName].count;
+      totalOrderAmount += cart[productName].total;
+      const category = getCategoryByName(productName);
+
+      if (category === "Трава") {
+        content += `🛍: ${productName}\n🗂: ${count} гр\n💵: $${cart[
+          productName
+        ].total.toFixed(2)}\n\n`;
+      } else {
+        content += `🛍: ${productName}\n🗂: ${count} шт\n💵: $${cart[
+          productName
+        ].total.toFixed(2)}\n\n`;
+      }
+    }
+
+    content += `Итого: $${totalOrderAmount.toFixed(2)}`;
+  } else if (data === "clear") {
+    cart = {}; // Очистить корзину
+    content = "Корзина очищена.";
+    ctx.reply(content);
+  } else {
+    return cart;
+  }
+
+  return content || "Корзина пуста";
+}
+
+function getCategoryByName(productName) {
+  for (const category in products) {
+    const categoryProducts = products[category];
+    const foundProduct = categoryProducts.find(
+      (product) => product.name === productName
+    );
+    if (foundProduct) {
+      return category;
+    }
+  }
+  return null; // Если товар не найден в каталоге
+}
+
+bot.action(/openGoods_(.+)/, (ctx) => {
+  const [, category] = ctx.match;
+  openGoods(ctx, category);
+  ctx.answerCbQuery(`Переходим в ${category}`);
+});
+
+bot.action(/addToCart_(.+)_(.+)_(.+)/, (ctx) => {
+  const [, name, count, price] = ctx.match;
+  addToCart(`${name}`, `${count}`, `${price}`);
+  ctx.answerCbQuery(`${name} добавлен в корзину в количестве ${count}`);
+});
+
+bot.action("sendForm", (ctx) => {
+  sendForm(ctx);
+  ctx.answerCbQuery("Переходим к оформлению заказа");
+});
+
+bot.action("clearCart", (ctx) => {
+  getCartContent(ctx, "clear");
+});
+
+bot.action("requestPaymentMethod", (ctx) => {
+  requestPaymentMethod(ctx);
+});
+
+function requestPaymentMethod(ctx) {
+  mainMenu();
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Картой", "paymentCard"),
+    Markup.button.callback("Наличными", "paymentCash"),
+  ]);
+
+  ctx.reply("Пожалуйста укажите удобный для вас способ оплаты", inlineKeyboard);
+}
+
+bot.launch();
