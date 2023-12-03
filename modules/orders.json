@@ -1,0 +1,42 @@
+[
+  {
+    "order": 0,
+    "cart": "",
+    "contact": {
+      "phone_number": "",
+      "first_name": "",
+      "user_id": ""
+    },
+    "payment": ""
+  },
+  {
+    "order": 1,
+    "cart": "🛍: Товар 3\n🗂: 2 гр\n💵: $15.98\n\n🛍: Товар 2\n🗂: 3 гр\n💵: $38.97\n\n🛍: Товар 1\n🗂: 1 гр\n💵: $9.99\n\nИтого: $64.94",
+    "contact": {
+      "phone_number": "+380961550556",
+      "first_name": "SMLovesKate",
+      "user_id": 486840238
+    },
+    "payment": "paymentCard"
+  },
+  {
+    "order": 2,
+    "cart": "🛍: Товар 6\n🗂: 3 шт\n💵: $56.97\n\nИтого: $56.97",
+    "contact": {
+      "phone_number": "+380961550556",
+      "first_name": "SMLovesKate",
+      "user_id": 486840238
+    },
+    "payment": "paymentCard"
+  },
+  {
+    "order": 3,
+    "cart": "🛍: Эксклюзивные косяки\n🗂: 5 шт\n💵: $249.95\n\n🛍: Секретные косяки\n🗂: 2 шт\n💵: $79.98\n\n🛍: Хуй пойми\n🗂: 1 шт\n💵: $35.99\n\nИтого: $365.92",
+    "contact": {
+      "phone_number": "+380961550556",
+      "first_name": "SMLovesKate",
+      "user_id": 486840238
+    },
+    "payment": "paymentCash"
+  }
+]

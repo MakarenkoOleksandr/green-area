@@ -16,6 +16,8 @@ bot.command("start", (ctx) => {
 // Variables
 let cart = {};
 let orderFormData = {};
+let { orderNumber, orders, saveOrdersToFile } = require("./modules/orders");
+
 const products = require("./modules/catalog");
 
 function mainMenu() {
@@ -84,7 +86,7 @@ function openGoods(ctx, name) {
 function sendForm(ctx) {
   const content = getCartContent(ctx, "check");
   if (Object.keys(content).length > 0) {
-    ctx.reply("Send me your number please", {
+    ctx.reply("Отправьте пожалуйста свой контакт", {
       reply_markup: {
         keyboard: [[{ text: "📲 Send phone number", request_contact: true }]],
       },
@@ -92,6 +94,16 @@ function sendForm(ctx) {
   } else {
     ctx.reply("Вы не можете оформить заказ с пустой корзиной!");
   }
+}
+
+function requestPaymentMethod(ctx) {
+  mainMenu();
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Картой", "paymentCard"),
+    Markup.button.callback("Наличными", "paymentCash"),
+  ]);
+
+  ctx.reply("Пожалуйста укажите удобный для вас способ оплаты", inlineKeyboard);
 }
 
 // Cart
@@ -124,13 +136,12 @@ function getCartContent(ctx, data) {
           productName
         ].total.toFixed(2)}\n\n`;
       } else {
-        content += `🛍: ${productName}\n🗂: ${count} шт\n💵: $${cart[
-          productName
-        ].total.toFixed(2)}\n\n`;
+        const total = cart[productName].total.toFixed(2);
+        content += `🛍: ${productName}\n🗂: ${count} шт\n💵: $${total}\n\n`;
       }
     }
-
     content += `Итого: $${totalOrderAmount.toFixed(2)}`;
+    return content;
   } else if (data === "clear") {
     cart = {}; // Очистить корзину
     content = "Корзина очищена.";
@@ -176,18 +187,36 @@ bot.action("clearCart", (ctx) => {
   getCartContent(ctx, "clear");
 });
 
-bot.action("requestPaymentMethod", (ctx) => {
-  requestPaymentMethod(ctx);
+bot.use((ctx, next) => {
+  if (ctx.update.message && ctx.update.message.contact) {
+    orderFormData.contact = ctx.update.message.contact;
+    requestPaymentMethod(ctx);
+  } else if (ctx.update.callback_query) {
+    orderFormData.paymentMethod = ctx.update.callback_query.data;
+
+    // Добавить код для оплаты картой
+
+    const total = getCartContent(ctx, "add");
+    const orderData = `Заказ #️⃣ ${orderNumber}\n\n ${total}\n\n`;
+    ctx.reply(`${orderData} ☑️ Успешно сформирован`);
+
+    const order = {
+      order: orderNumber,
+      cart: total,
+      contact: orderFormData.contact,
+      payment: orderFormData.paymentMethod,
+    };
+
+    orders.push(order);
+    saveOrdersToFile();
+
+    const keyboard = mainMenu();
+    ctx.reply("Чем еще могу помочь?", keyboard);
+
+    const message = `Новый заказ!!!\n\n ${orderData}\n ${orderFormData.contact.phone_number}\n ${orderFormData.paymentMethod}`;
+    ctx.telegram.sendMessage("-4084648763", message);
+  }
+  next();
 });
-
-function requestPaymentMethod(ctx) {
-  mainMenu();
-  const inlineKeyboard = Markup.inlineKeyboard([
-    Markup.button.callback("Картой", "paymentCard"),
-    Markup.button.callback("Наличными", "paymentCash"),
-  ]);
-
-  ctx.reply("Пожалуйста укажите удобный для вас способ оплаты", inlineKeyboard);
-}
 
 bot.launch();
