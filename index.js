@@ -1,15 +1,31 @@
-const { Telegraf, Markup } = require("telegraf");
+const { Telegraf, Markup, session } = require("telegraf");
 require("dotenv").config();
-
+const fs = require("fs");
+const request = require("request");
 const token = process.env.BOT_TOKEN;
-const bot = new Telegraf(token);
 
+const bot = new Telegraf(token);
+bot.use(session());
+
+bot.use((ctx, next) => {
+  ctx.session = ctx.session || {};
+  next();
+});
 // Variables
 let cart = {};
 let orderFormData = {};
 let { orderNumber, orders, saveOrdersToFile } = require("./modules/orders");
 const products = require("./modules/catalog");
 
+bot.command("start", (ctx) => {
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("RU", "ru"),
+    Markup.button.callback("EN", "en"),
+  ]);
+  ctx.reply("🌐", inlineKeyboard);
+});
+
+bot.action("ru", (ctx) => {});
 function mainMenu() {
   return Markup.keyboard([["📁 Каталог товаров"], ["🛒 Корзина"]]).resize();
 }
@@ -84,24 +100,98 @@ function openGoods(ctx, name) {
 function sendForm(ctx) {
   const content = getCartContent(ctx, "check");
   if (Object.keys(content).length > 0) {
-    ctx.reply("Отправьте пожалуйста свой контакт", {
-      reply_markup: {
-        keyboard: [[{ text: "📲 Send phone number", request_contact: true }]],
-      },
-    });
+    ctx.reply("Введите свой контакт (например, номер телефона):");
+    ctx.session.enableContactInput = true;
   } else {
     ctx.reply("Вы не можете оформить заказ с пустой корзиной!");
   }
 }
 
+function handleContactInput(ctx) {
+  if (ctx.session.enableContactInput) {
+    const contact = ctx.message.text;
+    orderFormData.contact = { phone_number: contact };
+    requestReceivingMethod(ctx);
+    ctx.session.enableContactInput = false;
+  }
+}
+
+function handleDeliveryAddress(ctx) {
+  if (ctx.session.enableDeliveryAddress) {
+    const address = ctx.message.text;
+    orderFormData.address = address;
+    ctx.session.enableDeliveryAddress = false;
+    requestPaymentMethod(ctx);
+  }
+}
+
+function handleAttachFile(ctx) {
+  if (ctx.session.attachBill) {
+    const photoInfo = ctx.message.photo[ctx.message.photo.length - 1];
+    bot.telegram.getFile(photoInfo.file_id).then((fileInfo) => {
+      const fileUrl = `https://api.telegram.org/file/bot${token}/${fileInfo.file_path}`;
+      const fileStream = fs.createWriteStream(fileInfo.file_path);
+      request(fileUrl).pipe(fileStream);
+
+      // Событие 'finish' произойдет, когда скачивание завершится
+      fileStream.on("finish", () => {
+        ctx.session.attachBill = false;
+        bot.telegram.sendPhoto("-1001908353411", {
+          source: `${fileInfo.file_path}`,
+        });
+        orderInfo(ctx);
+      });
+
+      // Скачиваем файл
+    });
+  }
+}
+
+function requestReceivingMethod(ctx) {
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Самовывоз", "pickup"),
+    Markup.button.callback("Доставка", "delivery"),
+  ]);
+
+  ctx.reply("Как вы хотите получить заказ", inlineKeyboard);
+}
+
+function requestDeliveryAddress(ctx) {
+  ctx.session.enableDeliveryAddress = true;
+  ctx.reply("Введите адрес доставки");
+}
+
 function requestPaymentMethod(ctx) {
-  mainMenu();
   const inlineKeyboard = Markup.inlineKeyboard([
     Markup.button.callback("Картой", "paymentCard"),
     Markup.button.callback("Наличными", "paymentCash"),
   ]);
 
   ctx.reply("Пожалуйста укажите удобный для вас способ оплаты", inlineKeyboard);
+}
+
+function orderInfo(ctx) {
+  const total = getCartContent(ctx, "add");
+  const orderData = `Заказ #️⃣ ${orderNumber}\n\n ${total}\n\n`;
+  ctx.reply(`${orderData} ☑️ Успешно сформирован`);
+
+  const order = {
+    order: orderNumber,
+    cart: total,
+    contact: orderFormData.contact,
+    address: orderFormData.address,
+    bill: orderFormData.bill,
+    payment: orderFormData.paymentMethod,
+  };
+
+  orders.push(order);
+  saveOrdersToFile();
+
+  const keyboard = mainMenu();
+  ctx.reply("Чем еще могу помочь?", keyboard);
+
+  const message = `Новый заказ!!!\n\n ${orderData}\n Связь с клиентом: ${orderFormData.contact.phone_number}\n Способ получения: ${orderFormData.address}\n Способ оплаты: ${orderFormData.paymentMethod}`;
+  ctx.telegram.sendMessage("-1001908353411", message);
 }
 
 // Cart
@@ -185,43 +275,46 @@ bot.action("clearCart", (ctx) => {
   getCartContent(ctx, "clear");
 });
 
+bot.action("pickup", (ctx) => {
+  orderFormData.address = "Самовывоз";
+  requestPaymentMethod(ctx);
+  ctx.answerCbQuery("Переходим к выбору оплаты");
+});
+
+bot.action("delivery", (ctx) => {
+  requestDeliveryAddress(ctx);
+});
+
+bot.action("paymentCash", (ctx) => {
+  orderFormData.paymentMethod = "Наличка";
+  orderInfo(ctx);
+});
+
+bot.action("paymentCard", (ctx) => {
+  orderFormData.paymentMethod = "Карта";
+  getQrCode(ctx);
+});
+
+function getQrCode(ctx) {
+  ctx.replyWithPhoto(
+    { source: "./img/1.jpg" },
+    { caption: "Ваш QR-код для оплаты" }
+  );
+  ctx.session.attachBill = true;
+  ctx.reply("Как совершите оплату, прикрепите квитанцию в чат");
+}
+
 bot.use((ctx, next) => {
-  if (ctx.update.message && ctx.update.message.contact) {
-    orderFormData.contact = ctx.update.message.contact;
-    requestPaymentMethod(ctx);
-  } else if (ctx.update.callback_query) {
-    orderFormData.paymentMethod = ctx.update.callback_query.data;
-
-    // Добавить код для оплаты картой
-
-    const total = getCartContent(ctx, "add");
-    const orderData = `Заказ #️⃣ ${orderNumber}\n\n ${total}\n\n`;
-    ctx.reply(`${orderData} ☑️ Успешно сформирован`);
-
-    const order = {
-      order: orderNumber,
-      cart: total,
-      contact: orderFormData.contact,
-      payment: orderFormData.paymentMethod,
-    };
-
-    orders.push(order);
-    saveOrdersToFile();
-
-    const keyboard = mainMenu();
-    ctx.reply("Чем еще могу помочь?", keyboard);
-
-    const message = `Новый заказ!!!\n\n ${orderData}\n ${orderFormData.contact.phone_number}\n ${orderFormData.paymentMethod}`;
-    ctx.telegram.sendMessage("-1001908353411", message);
+  if (ctx.message && ctx.message.text) {
+    if (ctx.session.enableContactInput === true) {
+      handleContactInput(ctx);
+    } else if (ctx.session.enableDeliveryAddress === true) {
+      handleDeliveryAddress(ctx);
+    }
+  } else {
+    handleAttachFile(ctx);
   }
   next();
 });
 
 bot.launch();
-// bot.command("start", (ctx) => {
-//   const inlineKeyboard = Markup.inlineKeyboard([
-//     Markup.button.callback("RU", "ru"),
-//     Markup.button.callback("EN", "en"),
-//   ]);
-//   ctx.reply("🌐", inlineKeyboard);
-// });
