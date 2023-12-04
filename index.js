@@ -7,17 +7,20 @@ const bot = new Telegraf(token);
 // Variables
 let cart = {};
 let orderFormData = {};
-let { orderNumber, orders, saveOrdersToFile } = require("./orders");
-const products = require("./catalog");
+let { orderNumber, orders, saveOrdersToFile } = require("./modules/orders");
+const products = require("./modules/catalog");
 
-const keyboard = mainMenu();
-ctx.reply(
-  `Привет! Добро пожаловать в наш магазин. Как я могу помочь?`,
-  keyboard
-);
 function mainMenu() {
   return Markup.keyboard([["📁 Каталог товаров"], ["🛒 Корзина"]]).resize();
 }
+
+bot.command("start", (ctx) => {
+  const keyboard = mainMenu();
+  ctx.reply(
+    `Привет! Добро пожаловать в наш магазин. Как я могу помочь?`,
+    keyboard
+  );
+});
 
 // Main menu
 bot.hears("📁 Каталог товаров", (ctx) => {
@@ -214,6 +217,7 @@ bot.use((ctx, next) => {
   next();
 });
 
+bot.launch();
 // bot.command("start", (ctx) => {
 //   const inlineKeyboard = Markup.inlineKeyboard([
 //     Markup.button.callback("RU", "ru"),
