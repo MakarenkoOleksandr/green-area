@@ -18,25 +18,16 @@ let { orderNumber, orders, saveOrdersToFile } = require("./modules/orders");
 const products = require("./modules/catalog");
 
 bot.command("start", (ctx) => {
-  const inlineKeyboard = Markup.inlineKeyboard([
-    Markup.button.callback("RU", "ru"),
-    Markup.button.callback("EN", "en"),
-  ]);
-  ctx.reply("🌐", inlineKeyboard);
-});
-
-bot.action("ru", (ctx) => {});
-function mainMenu() {
-  return Markup.keyboard([["📁 Каталог товаров"], ["🛒 Корзина"]]).resize();
-}
-
-bot.command("start", (ctx) => {
   const keyboard = mainMenu();
   ctx.reply(
     `Привет! Добро пожаловать в наш магазин. Как я могу помочь?`,
     keyboard
   );
 });
+
+function mainMenu() {
+  return Markup.keyboard([["📁 Каталог товаров"], ["🛒 Корзина"]]).resize();
+}
 
 // Main menu
 bot.hears("📁 Каталог товаров", (ctx) => {
@@ -133,7 +124,6 @@ function handleAttachFile(ctx) {
       const fileStream = fs.createWriteStream(fileInfo.file_path);
       request(fileUrl).pipe(fileStream);
 
-      // Событие 'finish' произойдет, когда скачивание завершится
       fileStream.on("finish", () => {
         ctx.session.attachBill = false;
         bot.telegram.sendPhoto("-1001908353411", {
@@ -141,8 +131,6 @@ function handleAttachFile(ctx) {
         });
         orderInfo(ctx);
       });
-
-      // Скачиваем файл
     });
   }
 }
@@ -187,11 +175,11 @@ function orderInfo(ctx) {
   orders.push(order);
   saveOrdersToFile();
 
-  const keyboard = mainMenu();
-  ctx.reply("Чем еще могу помочь?", keyboard);
-
   const message = `Новый заказ!!!\n\n ${orderData}\n Связь с клиентом: ${orderFormData.contact.phone_number}\n Способ получения: ${orderFormData.address}\n Способ оплаты: ${orderFormData.paymentMethod}`;
   ctx.telegram.sendMessage("-1001908353411", message);
+
+  const keyboard = mainMenu();
+  ctx.reply("Чем еще могу помочь?", keyboard);
 }
 
 // Cart
@@ -237,7 +225,6 @@ function getCartContent(ctx, data) {
   } else {
     return cart;
   }
-
   return content || "Корзина пуста";
 }
 
@@ -251,9 +238,17 @@ function getCategoryByName(productName) {
       return category;
     }
   }
-  return null; // Если товар не найден в каталоге
+  return null;
 }
 
+function getQrCode(ctx) {
+  ctx.replyWithPhoto(
+    { source: "./img/1.jpg" },
+    { caption: "Ваш QR-код для оплаты" }
+  );
+  ctx.session.attachBill = true;
+  ctx.reply("Как совершите оплату, прикрепите квитанцию в чат");
+}
 bot.action(/openGoods_(.+)/, (ctx) => {
   const [, category] = ctx.match;
   openGoods(ctx, category);
@@ -294,15 +289,6 @@ bot.action("paymentCard", (ctx) => {
   orderFormData.paymentMethod = "Карта";
   getQrCode(ctx);
 });
-
-function getQrCode(ctx) {
-  ctx.replyWithPhoto(
-    { source: "./img/1.jpg" },
-    { caption: "Ваш QR-код для оплаты" }
-  );
-  ctx.session.attachBill = true;
-  ctx.reply("Как совершите оплату, прикрепите квитанцию в чат");
-}
 
 bot.use((ctx, next) => {
   if (ctx.message && ctx.message.text) {

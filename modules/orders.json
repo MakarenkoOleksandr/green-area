@@ -11,475 +11,56 @@
   },
   {
     "order": 1,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 1,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCard"
+    "cart": "🛍: Товар 2\n🗂: 1 гр\n💵: $12.99\n\nИтого: $12.99",
+    "contact": {
+      "phone_number": "312312312"
+    },
+    "address": "Самовывоз",
+    "payment": "Наличка"
   },
   {
     "order": 2,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 3,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 4,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 5,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 6,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 7,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 8,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 9,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 10,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 11,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 12,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 13,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 14,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 15,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 16,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 17,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 18,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 18,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCard"
-  },
-  {
-    "order": 19,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 20,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 21,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 22,
-    "cart": "Итого: $0.00",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 23,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "dsadasdas"
-    },
-    "payment": "paymentCard"
-  },
-  {
-    "order": 24,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "33213213123"
-    },
-    "address": "asdasdasdasd",
-    "payment": "paymentCash"
-  },
-  {
-    "order": 25,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "dsadasd"
-    },
-    "address": "Самовывоз",
-    "payment": "paymentCard"
-  },
-  {
-    "order": 26,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3123123213"
-    },
-    "address": "Самовывоз",
-    "payment": "Наличка"
-  },
-  {
-    "order": 27,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "312321321"
-    },
-    "address": "asdsadas",
-    "bill": "AgACAgIAAxkBAAISqGVt61puDva7JIQ-D31DpfBOv5CBAAIh1TEbcR5wS6GfrrfPMcYFAQADAgADeQADMwQ",
-    "payment": "Карта"
-  },
-  {
-    "order": 28,
-    "cart": "🛍: Товар 3\n🗂: 3 гр\n💵: $23.97\n\n🛍: Товар 1\n🗂: 10 гр\n💵: $99.90\n\nИтого: $123.87",
-    "contact": {
-      "phone_number": "3213123123"
-    },
-    "address": "asdasdasd",
-    "bill": "AgACAgIAAxkBAAISu2Vt6_A2jQeYHZ9U83JgJjM0Qm6aAAIh1TEbcR5wS6GfrrfPMcYFAQADAgADeQADMwQ",
-    "payment": "Карта"
-  },
-  {
-    "order": 29,
-    "cart": "🛍: Товар 3\n🗂: 2 гр\n💵: $15.98\n\nИтого: $15.98",
-    "contact": {
-      "phone_number": "3123123123"
-    },
-    "address": "Самовывоз",
-    "payment": "Наличка"
-  },
-  {
-    "order": 30,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213213123"
-    },
-    "address": "dsadasdasd",
-    "bill": "AgACAgIAAxkBAAIS2mVt7J2SNFMNL6Lw4AMEsOd_p0hmAAIh1TEbcR5wS6GfrrfPMcYFAQADAgADeQADMwQ",
-    "payment": "Карта"
-  },
-  {
-    "order": 31,
-    "cart": "🛍: Товар 3\n🗂: 3 гр\n💵: $23.97\n\nИтого: $23.97",
-    "contact": {
-      "phone_number": "3123123123"
-    },
-    "address": "asdasdasdas",
-    "payment": "Наличка"
-  },
-  {
-    "order": 32,
-    "cart": "🛍: Товар 3\n🗂: 5 гр\n💵: $39.95\n\nИтого: $39.95",
-    "contact": {
-      "phone_number": "3213123123"
-    },
-    "address": "Самовывоз",
-    "bill": {
-      "file_id": "AgACAgIAAxkBAAIS-WVt7U28-zdc4eiMPi9XHetcm5wAAyHVMRtxHnBLoZ-ut88xxgUBAAMCAAN5AAMzBA",
-      "file_unique_id": "AQADIdUxG3EecEt-",
-      "file_size": 143842,
-      "width": 854,
-      "height": 1280
-    },
-    "payment": "Карта"
-  },
-  {
-    "order": 33,
-    "cart": "🛍: Товар 3\n🗂: 4 гр\n💵: $31.96\n\n🛍: Товар 2\n🗂: 10 гр\n💵: $129.90\n\nИтого: $161.86",
-    "contact": {
-      "phone_number": "3123123123"
-    },
-    "address": "Самовывоз",
-    "bill": "./downloads/photos/file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 34,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3123213123"
-    },
-    "address": "Самовывоз",
-    "bill": "./downloads/photos/file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 35,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3123123123"
-    },
-    "address": "Самовывоз",
-    "bill": "D:\\green-area\\downloads\\file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 36,
     "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
     "contact": {
       "phone_number": "312312312"
     },
     "address": "Самовывоз",
-    "bill": "D:\\green-area\\downloads\\file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 37,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3123123"
-    },
-    "address": "Самовывоз",
-    "bill": "D:\\green-area\\downloads\\file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 38,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213123"
-    },
-    "address": "Самовывоз",
-    "bill": "photos\\file_0.jpg\\downloads\\file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 39,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3123123123"
-    },
-    "address": "Самовывоз",
-    "bill": "./downloads/photos/file_0.jpg",
-    "payment": "Карта"
-  },
-  {
-    "order": 40,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213123213"
-    },
-    "address": "Самовывоз",
     "payment": "Наличка"
   },
   {
-    "order": 41,
+    "order": 3,
+    "cart": "🛍: Товар 3\n🗂: 5 гр\n💵: $39.95\n\nИтого: $39.95",
+    "contact": {
+      "phone_number": "13123123"
+    },
+    "address": "dasdasdasd",
+    "payment": "Карта"
+  },
+  {
+    "order": 4,
+    "cart": "🛍: Товар 3\n🗂: 3 гр\n💵: $23.97\n\nИтого: $23.97",
+    "contact": {
+      "phone_number": "3123213123"
+    },
+    "address": "dasdasdasdas",
+    "payment": "Карта"
+  },
+  {
+    "order": 5,
+    "cart": "🛍: Товар 3\n🗂: 2 гр\n💵: $15.98\n\nИтого: $15.98",
+    "contact": {
+      "phone_number": "312312312"
+    },
+    "address": "dasdasdas",
+    "payment": "Карта"
+  },
+  {
+    "order": 6,
     "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
     "contact": {
       "phone_number": "32132131"
     },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 42,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 43,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "312312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 44,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 45,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 46,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 47,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 48,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 49,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 50,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 51,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 52,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 53,
-    "cart": "Итого: $0.00"
-  },
-  {
-    "order": 54,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213123123"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 55,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 56,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "dasdasdasd"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 57,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321321321"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 58,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "31231231"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 59,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 60,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213123123"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 61,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "3213123"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 62,
-    "cart": "🛍: Товар 3\n🗂: 2 гр\n💵: $15.98\n\nИтого: $15.98",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 63,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 64,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "321312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Карта"
-  },
-  {
-    "order": 65,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "31231231"
-    },
-    "address": "Самовывоз",
+    "address": "dsadasd",
     "payment": "Карта"
   }
 ]
