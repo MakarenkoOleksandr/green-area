@@ -32,9 +32,9 @@ function mainMenu() {
 // Main menu
 bot.hears("📁 Каталог товаров", (ctx) => {
   const inlineKeyboard = Markup.inlineKeyboard(
-    Object.keys(products).map((category) =>
-      Markup.button.callback(`${category} 🔽`, `openGoods_${category}`)
-    )
+    Object.keys(products).map((category) => [
+      Markup.button.callback(`${category} 🔽`, `openGoods_${category}`),
+    ])
   );
   ctx.reply("Выберите категорию:", inlineKeyboard);
 });
@@ -72,10 +72,6 @@ function openGoods(ctx, name) {
       Markup.button.callback(
         "5️⃣",
         `addToCart_${product.name}_5_${product.price}`
-      ),
-      Markup.button.callback(
-        "🔟",
-        `addToCart_${product.name}_10_${product.price}`
       ),
     ]);
     if (name === "Трава") {

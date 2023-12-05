@@ -1,66 +1,12 @@
 [
   {
-    "order": 0,
-    "cart": "",
-    "contact": {
-      "phone_number": "",
-      "first_name": "",
-      "user_id": ""
-    },
-    "payment": ""
+  "order": 0,
+  "cart": "",
+  "contact": {
+    "phone_number": "",
+    "first_name": "",
+    "user_id": ""
   },
-  {
-    "order": 1,
-    "cart": "🛍: Товар 2\n🗂: 1 гр\n💵: $12.99\n\nИтого: $12.99",
-    "contact": {
-      "phone_number": "312312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Наличка"
-  },
-  {
-    "order": 2,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "312312312"
-    },
-    "address": "Самовывоз",
-    "payment": "Наличка"
-  },
-  {
-    "order": 3,
-    "cart": "🛍: Товар 3\n🗂: 5 гр\n💵: $39.95\n\nИтого: $39.95",
-    "contact": {
-      "phone_number": "13123123"
-    },
-    "address": "dasdasdasd",
-    "payment": "Карта"
-  },
-  {
-    "order": 4,
-    "cart": "🛍: Товар 3\n🗂: 3 гр\n💵: $23.97\n\nИтого: $23.97",
-    "contact": {
-      "phone_number": "3123213123"
-    },
-    "address": "dasdasdasdas",
-    "payment": "Карта"
-  },
-  {
-    "order": 5,
-    "cart": "🛍: Товар 3\n🗂: 2 гр\n💵: $15.98\n\nИтого: $15.98",
-    "contact": {
-      "phone_number": "312312312"
-    },
-    "address": "dasdasdas",
-    "payment": "Карта"
-  },
-  {
-    "order": 6,
-    "cart": "🛍: Товар 3\n🗂: 1 гр\n💵: $7.99\n\nИтого: $7.99",
-    "contact": {
-      "phone_number": "32132131"
-    },
-    "address": "dsadasd",
-    "payment": "Карта"
+  "payment": ""
   }
 ]
