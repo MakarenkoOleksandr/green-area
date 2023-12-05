@@ -1,7 +1,8 @@
 const { Telegraf, Markup, session } = require("telegraf");
-require("dotenv").config();
 const fs = require("fs");
 const request = require("request");
+
+require("dotenv").config();
 const token = process.env.BOT_TOKEN;
 
 const bot = new Telegraf(token);
@@ -11,11 +12,13 @@ bot.use((ctx, next) => {
   ctx.session = ctx.session || {};
   next();
 });
+
 // Variables
 let cart = {};
 let orderFormData = {};
 let { orderNumber, orders, saveOrdersToFile } = require("./modules/orders");
 const products = require("./modules/catalog");
+const { setTimeout } = require("timers/promises");
 
 bot.command("start", (ctx) => {
   const keyboard = mainMenu();
@@ -87,7 +90,9 @@ function openGoods(ctx, name) {
 function sendForm(ctx) {
   const content = getCartContent(ctx, "check");
   if (Object.keys(content).length > 0) {
-    ctx.reply("Введите свой контакт (например, номер телефона):");
+    const message = "Введите свой контакт (например, номер телефона):";
+    ctx.reply(message);
+
     ctx.session.enableContactInput = true;
   } else {
     ctx.reply("Вы не можете оформить заказ с пустой корзиной!");
@@ -141,8 +146,29 @@ function requestReceivingMethod(ctx) {
 }
 
 function requestDeliveryAddress(ctx) {
-  ctx.session.enableDeliveryAddress = true;
-  ctx.reply("Введите адрес доставки");
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Ввести в ручную", "manual"),
+    Markup.button.callback("Поделиться геопозицией", "shareLocation"),
+  ]);
+
+  ctx.reply("Выберите действие", inlineKeyboard);
+}
+
+function getPlatform(ctx) {
+  const inlineKeyboard = Markup.inlineKeyboard([
+    Markup.button.callback("Компьютер", "pc"),
+    Markup.button.callback("Телефон", "mobile"),
+  ]);
+
+  ctx.reply("Выберите платформу", inlineKeyboard);
+}
+
+function shareLocation(ctx) {
+  const keyboard = Markup.keyboard([
+    Markup.button.locationRequest("Поделиться геопозией"),
+  ]).resize();
+
+  ctx.reply("Пожалуйста, поделитесь своей геопозицией", keyboard);
 }
 
 function requestPaymentMethod(ctx) {
@@ -167,18 +193,24 @@ function orderInfo(ctx) {
     bill: orderFormData.bill,
     payment: orderFormData.paymentMethod,
   };
-
   orders.push(order);
   saveOrdersToFile();
 
-  const message = `Новый заказ!!!\n\n ${orderData}\n Связь с клиентом: ${orderFormData.contact.phone_number}\n Способ получения: ${orderFormData.address}\n Способ оплаты: ${orderFormData.paymentMethod}`;
-  ctx.telegram.sendMessage("-1001908353411", message);
+  if (orderFormData.address.latitude && orderFormData.address.longitude) {
+    const message = `Новый заказ!!!\n\n ${orderData}\n Связь с клиентом: ${orderFormData.contact.phone_number}\n Способ получения: ${orderFormData.address.latitude}, ${orderFormData.address.longitude}\n Способ оплаты: ${orderFormData.paymentMethod}`;
+    ctx.telegram.sendMessage("-1001908353411", message);
+  } else {
+    const message = `Новый заказ!!!\n\n ${orderData}\n Связь с клиентом: ${orderFormData.contact.phone_number}\n Способ получения: ${orderFormData.address}\n Способ оплаты: ${orderFormData.paymentMethod}`;
+    ctx.telegram.sendMessage("-1001908353411", message);
+  }
+  returnMainMenu(ctx);
+}
 
+function returnMainMenu(ctx) {
   const keyboard = mainMenu();
   ctx.reply("Чем еще могу помочь?", keyboard);
 }
 
-// Cart
 function addToCart(productName, count, price) {
   const setPrice = parseFloat(price.replace(/\$/g, ""));
   if (!cart[productName]) {
@@ -197,7 +229,6 @@ function getCartContent(ctx, data) {
 
   if (data === "add") {
     let totalOrderAmount = 0;
-
     for (const productName in cart) {
       const count = cart[productName].count;
       totalOrderAmount += cart[productName].total;
@@ -238,13 +269,22 @@ function getCategoryByName(productName) {
 }
 
 function getQrCode(ctx) {
-  ctx.replyWithPhoto(
-    { source: "./img/1.jpg" },
-    { caption: "Ваш QR-код для оплаты" }
-  );
-  ctx.session.attachBill = true;
-  ctx.reply("Как совершите оплату, прикрепите квитанцию в чат");
+  if (!ctx.session.attachBill) {
+    ctx.replyWithPhoto(
+      { source: "./img/1.jpg" },
+      { caption: "Ваш QR-код для оплаты" }
+    );
+    ctx.session.attachBill = true;
+    ctx.reply("Как совершите оплату, прикрепите квитанцию в чат");
+  }
 }
+
+function clearTemporaryData(ctx) {
+  ctx.session.enableContactInput = false;
+  ctx.session.enableDeliveryAddress = false;
+  ctx.session.attachBill = false;
+}
+
 bot.action(/openGoods_(.+)/, (ctx) => {
   const [, category] = ctx.match;
   openGoods(ctx, category);
@@ -273,7 +313,16 @@ bot.action("pickup", (ctx) => {
 });
 
 bot.action("delivery", (ctx) => {
-  requestDeliveryAddress(ctx);
+  getPlatform(ctx);
+});
+
+bot.action("manual", (ctx) => {
+  ctx.session.enableDeliveryAddress = true;
+  ctx.reply("Введите адрес доставки");
+});
+
+bot.action("shareLocation", (ctx) => {
+  shareLocation(ctx);
 });
 
 bot.action("paymentCash", (ctx) => {
@@ -286,6 +335,17 @@ bot.action("paymentCard", (ctx) => {
   getQrCode(ctx);
 });
 
+bot.action("pc", (ctx) => {
+  ctx.session.enableDeliveryAddress = true;
+  ctx.reply(
+    "На ПК нет возможности поделиться геопозицией\nВведите адрес доставки вручную"
+  );
+});
+
+bot.action("mobile", (ctx) => {
+  requestDeliveryAddress(ctx);
+});
+
 bot.use((ctx, next) => {
   if (ctx.message && ctx.message.text) {
     if (ctx.session.enableContactInput === true) {
@@ -296,7 +356,18 @@ bot.use((ctx, next) => {
   } else {
     handleAttachFile(ctx);
   }
+  if (ctx.message.location) {
+    const { latitude, longitude } = ctx.message.location;
+    orderFormData.address = { latitude, longitude };
+    ctx.session.enableDeliveryAddress = false;
+    requestPaymentMethod(ctx);
+  }
   next();
+});
+
+bot.command("stop", (ctx) => {
+  ctx.reply("Оформление заказа отменено. Чем еще могу помочь?");
+  clearTemporaryData(ctx);
 });
 
 bot.launch();
